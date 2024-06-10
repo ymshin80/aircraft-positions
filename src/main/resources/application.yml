@@ -1,0 +1,30 @@
+spring:
+  application:
+   name: aircraft-positions
+#  cloud:
+#    stream:
+#      bindings:
+#        retrieveAircraftPositions-in-0:
+#          destination: aircraftpositions
+#          group: aircraftpositions
+#          binder: rabbit
+#  datasource:
+#    hikari:
+#      driver-class-name: org.mariadb.jdbc.Driver
+#      jdbc-url: jdbc:mariadb://localhost:3306/chatting
+#      username: ymshin
+#      password: ymshin
+#      connection-timeout: 30000
+#      idle-timeout: 60000
+#      max-lifetime: 1800000
+#      maximum-pool-size: 20
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    view-names: pages/*
+
+server:
+  port: 8082
