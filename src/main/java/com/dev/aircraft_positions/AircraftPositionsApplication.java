@@ -10,7 +10,7 @@ public class AircraftPositionsApplication {
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(AircraftPositionsApplication.class);
 		
-		application.setWebApplicationType(WebApplicationType.REACTIVE);
+		//application.setWebApplicationType(WebApplicationType.REACTIVE);
 		
 		application.run( args);
 		

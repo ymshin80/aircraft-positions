@@ -1,0 +1,15 @@
+<div xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{common/layouts/defaultLayout}"
+layout:fragment="Content">
+  <div>
+    <p th:text="${registrationId}"></p>
+    <p th:text="${grantType}"></p>
+    <p th:text="${redirectUri}"></p>
+    <div th:each="scope:${scopes}">
+      <p th:text="${scope}"></p>
+    </div>
+  
+  </div>
+
+</div>

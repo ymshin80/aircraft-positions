@@ -2,14 +2,14 @@ package com.dev.aircraft_positions.domain;
 
 import java.time.Instant;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
-//@Entity(name = "air_craft")
-@Document
+
+@Entity
 public class Aircraft {
 	@Id	
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,0 +1,38 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{common/layouts/defaultLayout}"
+  layout:fragment="Content"
+>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
+<body class="login">
+    <div id="okta-login-container"></div>
+    <script type="text/javascript">
+      var config = {};
+      config.baseUrl = "[[${oktaBaseUrl}]]"
+      config.clientId = "[[${oktaClientId}]]"
+      config.redirectUri= "[[${redirectUri}]]"
+      config.logo =  'https://ok1static.oktacdn.com/assets/img/logos/okta-logo.png';
+      config.authParams = {
+    		  issuer: "[[${issuerUri}]]",
+    		  responseType: 'code',
+    		  state:  "[[${state}]]" || false,
+    		  scopes: "[[${scopes}]]",
+    		  display: 'page'
+    		};
+      
+      new OktaSignIn(config).renderEl(
+    	  { el: '#okta-login-container'},
+    	  function(res) {
+    		  console.log(res);
+    	  }
+      
+      );
+    
+    
+    </script>
+</body>
+</html>
