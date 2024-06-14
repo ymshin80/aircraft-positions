@@ -28,13 +28,13 @@ public record OAuth2UserInfo(String name,String email,String profile) {
 	
 	
 	private static OAuth2UserInfo ofKakao(Map<String, Object> attributes) {
-		Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-	    Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+		Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+	//    Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 	    
 		return OAuth2UserInfo.builder()
-				.name((String)profile.get("nickname"))
+				.name((String)properties.get("nickname"))
 				.email("siyumy80@gmail.com")
-				.profile((String)profile.get("profile_image_url")).build();
+				.profile((String)properties.get("profile_image")).build();
 	}
 
 	private static OAuth2UserInfo ofOkta(Map<String, Object> attributes) {

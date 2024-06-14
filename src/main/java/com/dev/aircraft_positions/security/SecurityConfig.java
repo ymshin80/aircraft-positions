@@ -11,23 +11,36 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.dev.aircraft_positions.security.filter.TokenAuthenticationFilter;
+import com.dev.aircraft_positions.security.filter.TokenExceptionFilter;
 import com.dev.aircraft_positions.security.handler.OAuth2SuccessHandler;
+import com.nimbusds.oauth2.sdk.AccessTokenResponse;
+import com.nimbusds.oauth2.sdk.token.Tokens;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+	
+	private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
 	@Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
 	private String issuerUri;
@@ -36,11 +49,13 @@ public class SecurityConfig {
 	//private final Custom
 	private final CustomOAuth2UserService oauth2UserService;
 	private final OAuth2SuccessHandler oauth2SuccessHandler;
+	private final TokenAuthenticationFilter tokenAuthenticationFilter;
 	
-	public SecurityConfig(ClientRegistrationRepository clientRegistrationRepository, CustomOAuth2UserService oauth2UserService, OAuth2SuccessHandler oauth2SuccessHandler) {
+	public SecurityConfig(ClientRegistrationRepository clientRegistrationRepository, CustomOAuth2UserService oauth2UserService, OAuth2SuccessHandler oauth2SuccessHandler, TokenAuthenticationFilter tokenAuthenticationFilter) {
 		this.clientRegistrationRepository = clientRegistrationRepository;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2SuccessHandler = oauth2SuccessHandler;
+		this.tokenAuthenticationFilter = tokenAuthenticationFilter;
 	}
 	
 //	@Bean
@@ -78,14 +93,27 @@ public class SecurityConfig {
 		http.oauth2Login(oauth ->
 		// OAuth2 로그인 기능에 대한 여러 설정의 진입점
 		// OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정을 담당
-			oauth.userInfoEndpoint(c -> c.userService(oauth2UserService))
+			oauth.userInfoEndpoint(c -> 
+				c.userService(oauth2UserService)
+			)
+//			 .authorizationEndpoint(authorization -> {
+//				 log.debug("#######authorizationEndpoint########");
+//				 
+//			 })
+//			 .tokenEndpoint(token -> {
+//				 
+//				 log.debug("#######tokenEndpoint########");
+//			 })
 			.successHandler(oauth2SuccessHandler)
 		);
+	//	http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
+		//.addFilterBefore(new TokenExceptionFilter(), tokenAuthenticationFilter.getClass());
+		//IdTokenClaimNames.SUB
 		return http.build();
 	}
 	
-	
+
 	private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
 		
 		OidcClientInitiatedLogoutSuccessHandler logoutHandler = 
@@ -111,8 +139,8 @@ public class SecurityConfig {
 	}
 	
 	
-	@Bean
-	public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
-	    return JwtDecoders.fromIssuerLocation(issuerUri);
-	}
+//	@Bean
+//	public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
+//	    return JwtDecoders.fromIssuerLocation(issuerUri);
+//	}
 }

@@ -41,6 +41,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			log.debug("#############loadUser####################");
 			log.debug("regId: {}", regId);
 			log.debug("userNameAttributeName: {}", userNameAttributeName);
+			
+			log.debug(oAuth2UserAttributes.toString());
+			
+			for(Map.Entry<String, Object> entiry: oAuth2UserAttributes.entrySet()) {
+				log.debug("userInfo key: {}", entiry.getKey());
+				log.debug("userInfo value: {}", entiry.getValue());
+			}
 		}
 		
 		// 4. 유저 정보 dto 생성
